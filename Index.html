@@ -1,0 +1,451 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Point - Video Converter</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #080d19;
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  padding: 22px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #26334b;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #55d8ed;
+}
+
+.tag {
+  color: #9baac3;
+  font-size: 12px;
+}
+
+.hero {
+  text-align: center;
+  padding: 75px 20px 35px;
+}
+
+.hero h1 {
+  font-size: clamp(40px, 7vw, 65px);
+  line-height: 1.1;
+}
+
+.hero h1 span {
+  background: linear-gradient(90deg,#758fff,#48d9e7);
+  color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  color: #9baac3;
+  margin: 18px auto;
+  max-width: 550px;
+  line-height: 1.7;
+}
+
+.container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 25px;
+  background: #121c2e;
+  border: 1px solid #293750;
+  border-radius: 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 13px;
+  background: #1d2b43;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: #526ff0;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #394966;
+  background: #091323;
+  color: white;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 18px;
+}
+
+input:focus, select:focus {
+  border-color: #61cce9;
+}
+
+.dropzone {
+  padding: 35px 15px;
+  border: 2px dashed #50668c;
+  text-align: center;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #9eafc9;
+}
+
+.dropzone strong {
+  display: block;
+  margin: 10px;
+  color: white;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.download {
+  width: 100%;
+  padding: 17px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg,#758fff,#48d9e7);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #07111f;
+}
+
+.download:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.status {
+  text-align: center;
+  margin-top: 18px;
+  color: #6ce0cb;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.note {
+  font-size: 11px;
+  color: #8c9bb2;
+  line-height: 1.6;
+  margin: 0 0 17px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+  max-width: 900px;
+  margin: 55px auto;
+  padding: 0 20px;
+}
+
+.feature {
+  background: #121c2e;
+  padding: 20px;
+  border-radius: 13px;
+  border: 1px solid #293750;
+}
+
+.feature h3 {
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.feature p {
+  color: #9baac3;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  border-top: 1px solid #26334b;
+  color: #8190a8;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.hidden {
+  display: none;
+}
+
+@media(max-width:600px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+  .options {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .hero {
+    padding-top: 55px;
+  }
+  .container {
+    margin: 15px;
+    padding: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">▶ VIDEO<span>POINT</span></div>
+  <div class="tag">VIDEO CONVERTER</div>
+</header>
+
+<section class="hero">
+  <h1>Your Videos.<br><span>Your Format.</span></h1>
+  <p>
+    Convert your videos into your preferred format.
+    Upload media or paste a direct media-file link.
+    Choose quality up to 8K when supported.
+  </p>
+</section>
+
+<div class="container">
+
+  <div class="tabs">
+    <button id="urlTab" class="active" onclick="setMode('url')">
+      Paste URL
+    </button>
+    <button id="fileTab" onclick="setMode('file')">
+      Upload File
+    </button>
+  </div>
+
+  <form id="convertForm">
+
+    <div id="urlSection">
+      <label>Direct Video URL</label>
+      <input
+        type="url"
+        id="videoUrl"
+        placeholder="https://example.com/video.mp4">
+      <p class="note">
+        Use a direct HTTPS media-file URL. Platform page links
+        such as YouTube, Instagram and TikTok are not supported.
+      </p>
+    </div>
+
+    <div id="fileSection" class="hidden">
+      <label>Select Video or Audio</label>
+      <label class="dropzone" for="videoFile">
+        ⬆
+        <strong id="fileName">Choose a file</strong>
+        Video or Audio · Maximum 2 GB
+      </label>
+      <input
+        type="file"
+        id="videoFile"
+        accept="video/*,audio/*"
+        hidden>
+    </div>
+
+    <div class="options">
+      <div>
+        <label>Output Format</label>
+        <select id="format">
+          <option value="mp4">MP4</option>
+          <option value="webm">WEBM</option>
+          <option value="mp3">MP3 Audio</option>
+          <option value="original">Original Format</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Video Resolution</label>
+        <select id="resolution">
+          <option value="original">Original Quality</option>
+          <option value="4320">8K UHD (4320p)</option>
+          <option value="2160">4K UHD (2160p)</option>
+          <option value="1440">2K QHD (1440p)</option>
+          <option value="1080">Full HD (1080p)</option>
+          <option value="720">HD (720p)</option>
+          <option value="480">480p</option>
+          <option value="360">360p</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="note">
+      Note: 8K output requires an 8K source. Lower-resolution
+      videos will not be artificially upscaled.
+    </p>
+
+    <button class="download" id="downloadBtn" type="submit">
+      ↓ Convert & Download
+    </button>
+
+    <div class="status" id="status"></div>
+
+  </form>
+</div>
+
+<section class="features">
+
+  <div class="feature">
+    <h3>🎬 Multiple Formats</h3>
+    <p>Convert videos to MP4, WebM and MP3.</p>
+  </div>
+
+  <div class="feature">
+    <h3>⚡ Up to 8K</h3>
+    <p>Select supported resolutions up to 4320p.</p>
+  </div>
+
+  <div class="feature">
+    <h3>📱 Mobile Friendly</h3>
+    <p>Works with responsive layouts on phones and computers.</p>
+  </div>
+
+</section>
+
+<footer>
+  <p>
+    Video Point is an independent media conversion tool.
+    Only convert content you own or have permission to use.
+  </p>
+  <br>
+  © 2026 VIDEO POINT. All Rights Reserved.
+</footer>
+
+<script>
+let mode = "url";
+
+function setMode(value) {
+  mode = value;
+
+  document.getElementById("urlSection")
+    .classList.toggle("hidden", value !== "url");
+
+  document.getElementById("fileSection")
+    .classList.toggle("hidden", value !== "file");
+
+  document.getElementById("urlTab")
+    .classList.toggle("active", value === "url");
+
+  document.getElementById("fileTab")
+    .classList.toggle("active", value === "file");
+
+  document.getElementById("status").textContent = "";
+}
+
+document.getElementById("videoFile").addEventListener("change", function() {
+  document.getElementById("fileName").textContent =
+    this.files[0]?.name || "Choose a file";
+});
+
+document.getElementById("convertForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const status = document.getElementById("status");
+  const button = document.getElementById("downloadBtn");
+  const file = document.getElementById("videoFile").files[0];
+  const url = document.getElementById("videoUrl").value.trim();
+
+  if (mode === "file" && !file) {
+    status.textContent = "Please select a media file.";
+    return;
+  }
+
+  if (mode === "url" && !url) {
+    status.textContent = "Please enter a direct media-file URL.";
+    return;
+  }
+
+  const data = new FormData();
+
+  if (mode === "file") {
+    data.append("media", file);
+  } else {
+    data.append("url", url);
+  }
+
+  data.append("format", document.getElementById("format").value);
+  data.append("resolution", document.getElementById("resolution").value);
+
+  button.disabled = true;
+  button.textContent = "⏳ Processing...";
+  status.textContent = "Uploading and converting your media...";
+
+  try {
+    const response = await fetch("/api/convert", {
+      method: "POST",
+      body: data
+    });
+
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.error || "Conversion failed.");
+    }
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = "video-point-download";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(objectUrl);
+
+    status.textContent = "✓ Your download is ready!";
+
+  } catch(error) {
+    status.textContent = "Error: " + error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "↓ Convert & Download";
+  }
+});
+</script>
+
+</body>
+  </html>
+  
